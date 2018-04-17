@@ -25,6 +25,6 @@
   include_tasks: docker-compose.yml
   when: docker_install_compose
 
-# - name: Login to Docker Hub
-#   include_tasks: dockerhub-login.yml
-#   when: dockerhub_login
+- name: Login to Docker Hub
+  include_tasks: dockerhub-login.yml
+  when: dockerhub_login
