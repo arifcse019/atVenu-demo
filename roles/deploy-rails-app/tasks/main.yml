@@ -8,40 +8,28 @@
 
 - name: clean checkout directory
   file:
-    path: /usr/src/AssignmentDemoRailsApplication
+    path: /usr/local/src/AssignmentDemoRailsApplication
     state: absent
 
 - name: create checkout directory
   file:
-    path: /usr/src/AssignmentDemoRailsApplication
+    path: /usr/local/src/AssignmentDemoRailsApplication
     state: directory
 
 - name: clones the git repo
   git:
     repo: https://github.com/atvenu/AssignmentDemoRailsApplication.git
-    dest: /usr/src/AssignmentDemoRailsApplication
+    dest: /usr/local/src/AssignmentDemoRailsApplication
     clone: yes
     update: yes
 
 - name: Bundle install
   shell: bundle install
   args:
-    chdir: /usr/src/AssignmentDemoRailsApplication
+    chdir: /usr/local/src/AssignmentDemoRailsApplication
 
-- name: Synchronize projects to /var/www
-  synchronize:
-    src: /usr/src/AssignmentDemoRailsApplication/
-    dest: /var/www/AssignmentDemoRailsApplication/
-    checksum: yes
-    recursive: yes
-    times: no
-    group: no
-    owner: no
-    rsync_opts:
-      - "--stats"
-      - "--progress"
-      - "--delete"
-  delegate_to: "{{ inventory_hostname }}"
+- name: Copy app from checkout directory
+  shell: cp -r /usr/local/src/AssignmentDemoRailsApplication/ /var/www/AssignmentDemoRailsApplication/
 
 - name: Check if passenger is already running
   shell: passenger status

@@ -28,3 +28,18 @@
 - name: Login to Docker Hub
   include_tasks: dockerhub-login.yml
   when: dockerhub_login
+
+- name: Installs git
+  yum:
+    name: git
+    state: installed
+
+- name: clones the git repo with ansible code
+  git:
+    repo: https://github.com/arifcse019/atVenu-demo.git
+    dest: /usr/local/src/atVenu-demo
+    clone: yes
+    update: yes
+
+- name: Run ansible playbook
+  include_tasks: ansible-playbook.yml
