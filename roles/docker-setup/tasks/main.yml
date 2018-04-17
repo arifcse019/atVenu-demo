@@ -1,0 +1,30 @@
+---
+- name: Include OS specific variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_os_family }}-{{ ansible_distribution_major_version }}.yml"
+
+- name: setup-RedHat
+  include_tasks: setup-RedHat.yml
+  when: ansible_os_family == 'RedHat'
+
+- name: setup-Debian
+  include_tasks: setup-Debian.yml
+  when: ansible_os_family == 'Debian'
+
+- name: Install Docker.
+  package: name={{ docker_package }} state={{ docker_package_state }}
+
+- name: Ensure Docker is started and enabled at boot.
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: docker compose install
+  include_tasks: docker-compose.yml
+  when: docker_install_compose
+
+# - name: Login to Docker Hub
+#   include_tasks: dockerhub-login.yml
+#   when: dockerhub_login

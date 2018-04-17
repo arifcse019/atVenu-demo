@@ -1,0 +1,15 @@
+---
+- name: Load vault variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "vault_dockerhub_{{ env }}.yml"
+        - "vault_dockerhub_default.yml"
+  no_log: true
+
+- name: Log into DockerHub
+  docker_login:
+    username: "{{ dockerhub_username }}"
+    password: "{{ vault_dockerhub_password }}"
+    email: "{{ dockerhub_email }}"
+  no_log: true

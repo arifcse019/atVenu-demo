@@ -1,0 +1,22 @@
+---
+# tasks file for os-setup
+
+- name: Yum update and development tools
+  command: "{{item}}"
+  with_items:
+    - yum -y update
+    - yum groupinstall -y 'development tools'
+  become: yes
+
+- name: Installs epel
+  yum:
+    state: installed
+    name: http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+  become: yes
+
+- name: Yum update and development tools
+  command: "{{item}}"
+  with_items:
+    - yum -y update
+    - yum install -y curl-devel nano sqlite-devel libyaml-devel
+  become: yes

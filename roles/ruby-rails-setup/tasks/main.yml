@@ -1,0 +1,22 @@
+---
+# tasks file for ruby-rails-setup
+
+- name: setting up gpg key
+  shell: gpg2 --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
+  become: yes
+
+- name: setting up rvm
+  shell: curl -L get.rvm.io | bash -s stable
+  become: yes
+
+- name: setting up ruby environment and rails
+  shell: "{{item}}"
+  with_items:
+    - source /etc/profile.d/rvm.sh && rvm reload
+    - source /etc/profile.d/rvm.sh && rvm install 2.5.1
+    - yum install -y nodejs
+    - rvm alias create default 2.5.1
+    - gem install bundler rails
+  become: yes
+
+

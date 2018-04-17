@@ -1,0 +1,9 @@
+[rails-instances]
+centos-s-2vcpu-4gb-sfo2-02 ansible_ssh_host=206.189.74.79
+centos-s-2vcpu-4gb-sfo2-03 ansible_ssh_host=138.68.42.181
+
+[haproxy-instance]
+centos-s-2vcpu-4gb-sfo2-04 ansible_ssh_host=138.197.210.229
+
+[config-server]
+centos-s-2vcpu-4gb-sfo2-01 ansible_ssh_host=206.189.72.152

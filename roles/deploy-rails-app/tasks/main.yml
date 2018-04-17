@@ -1,0 +1,56 @@
+---
+#tasks file for deploy-rails-app
+
+- name: create docroot directory
+  file:
+    path: /var/www/AssignmentDemoRailsApplication
+    state: directory
+
+- name: clean checkout directory
+  file:
+    path: /usr/src/AssignmentDemoRailsApplication
+    state: absent
+
+- name: create checkout directory
+  file:
+    path: /usr/src/AssignmentDemoRailsApplication
+    state: directory
+
+- name: clones the git repo
+  git:
+    repo: https://github.com/atvenu/AssignmentDemoRailsApplication.git
+    dest: /usr/src/AssignmentDemoRailsApplication
+    clone: yes
+    update: yes
+
+- name: Bundle install
+  shell: bundle install
+  args:
+    chdir: /usr/src/AssignmentDemoRailsApplication
+
+- name: Synchronize projects to /var/www
+  synchronize:
+    src: /usr/src/AssignmentDemoRailsApplication/
+    dest: /var/www/AssignmentDemoRailsApplication/
+    checksum: yes
+    recursive: yes
+    times: no
+    group: no
+    owner: no
+    rsync_opts:
+      - "--stats"
+      - "--progress"
+      - "--delete"
+  delegate_to: "{{ inventory_hostname }}"
+
+- name: Check if passenger is already running
+  shell: passenger status
+  args:
+    chdir: /var/www/AssignmentDemoRailsApplication
+  register: passenger_status
+
+- name: start the application
+  shell: passenger start --port 3000 -d #nohup rails server -b=0.0.0.0 </dev/null >/dev/null 2>&1 &
+  args:
+    chdir: /var/www/AssignmentDemoRailsApplication
+  when: passenger_status.stdout.find("Phusion Passenger Standalone is not running") != -1

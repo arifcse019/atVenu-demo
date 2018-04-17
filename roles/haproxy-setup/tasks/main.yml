@@ -1,0 +1,27 @@
+---
+# tasks file for haproxy-setup
+
+- name: Installs epel
+  yum:
+    state: installed
+    name: http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+  become: yes
+
+- name: Install haproxy
+  yum:
+    state: installed
+    name: haproxy
+
+- debug: msg="{{hostvars[groups['rails-instances'][0]]['ansible_default_ipv4']['address']}}"
+
+- name: Updates haproxy config
+  template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+    mode: 0644
+  notify: restart haproxy
+
+- name: start haproxy
+  service:
+    name: haproxy
+    state: started

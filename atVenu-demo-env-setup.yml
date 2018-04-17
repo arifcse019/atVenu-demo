@@ -1,0 +1,13 @@
+---
+- hosts: rails-instances
+
+  roles:
+    - os-setup
+    - ruby-rails-setup
+    - passenger-nginx-setup
+    - deploy-rails-app
+
+- hosts: haproxy-instance
+
+  roles:
+    - haproxy-setup

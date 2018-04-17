@@ -1,0 +1,59 @@
+---
+- name: Ensure old versions of Docker are not installed.
+  package:
+    name: '{{ item }}'
+    state: absent
+  with_items:
+    - docker
+    - docker-common
+    - docker-engine
+
+- name: Add Docker GPG key.
+  rpm_key:
+    key: https://download.docker.com/linux/centos/gpg
+    state: present
+
+- name: Add Docker repository.
+  get_url:
+    url: "{{ docker_yum_repo_url }}"
+    dest: '/etc/yum.repos.d/docker-{{ docker_edition }}.repo'
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Configure Docker Edge repo.
+  ini_file:
+    dest: '/etc/yum.repos.d/docker-{{ docker_edition }}.repo'
+    section: 'docker-{{ docker_edition }}-edge'
+    option: enabled
+    value: '{{ docker_yum_repo_enable_edge }}'
+
+- name: Configure Docker Test repo.
+  ini_file:
+    dest: '/etc/yum.repos.d/docker-{{ docker_edition }}.repo'
+    section: 'docker-{{ docker_edition }}-test'
+    option: enabled
+    value: '{{ docker_yum_repo_enable_test }}'
+
+- name: Installs epel release
+  yum: state=installed name={{ item }}
+  with_items:
+    - 'https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm'
+
+- name: Enable extras repo on RedHat Enterprise
+  command: "yum-config-manager --enable {{ extras_repo }}"
+  when: ansible_distribution == 'RedHat'
+
+- name: Installs container selinux
+  yum:
+    name: container-selinux
+    state: latest
+
+- name: Install pip
+  yum:
+    name: "python-pip"
+    state: installed
+
+- name: Install docker-py via pip
+  pip:
+    name: docker-py

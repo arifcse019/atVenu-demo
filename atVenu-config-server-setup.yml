@@ -1,0 +1,13 @@
+---
+- hosts: config-server
+
+  roles:
+    - docker-setup
+
+  tasks:
+    -  name: creates customer user account
+       user:
+         name: customer
+
+
+

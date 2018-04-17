@@ -1,0 +1,8 @@
+---
+# tasks file for passenger-nginx-setup
+
+- name: installs passenger
+  shell: gem install passenger
+
+- name: compiles nginx with passenger module
+  shell: passenger-install-nginx-module --auto --auto-download --prefix=/opt/nginx
