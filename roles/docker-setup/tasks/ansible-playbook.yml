@@ -4,8 +4,10 @@
 
 - name: create the demo environment
   shell: >
-    docker run --rm -it \
+    docker run --rm \
     -v ~/.ssh/id_rsa:/root/.ssh/id_rsa \
     -v ~/.ssh/id_rsa.pub:/root/.ssh/id_rsa.pub \
     -v $(pwd):/ansible/playbooks \
     philm/ansible_playbook atVenu-demo-env-setup.yml -i environments/demo
+  args:
+    chdir: /usr/local/src/atVenu-demo
